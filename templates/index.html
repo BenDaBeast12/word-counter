@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Google Search Console verification -->
+    <meta name="google-site-verification"
+          content="5iMg0IsWd16Ain6f7A1289I_mOG8PaDKDfBjyF7uig4">
+
+    <!-- Website description -->
     <meta name="description"
           content="Free online word counter. Count words, characters, sentences and paragraphs, and estimate reading time instantly.">
 
@@ -12,9 +17,11 @@
 
     <title>Word Counter - Free Online Text Analyzer</title>
 
+    <!-- Browser tab icon -->
     <link rel="icon" type="image/svg+xml"
           href="{{ url_for('static', filename='logo.svg') }}">
 
+    <!-- Website styling -->
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -48,11 +55,17 @@
             </span>
 
             <div class="buttons">
-                <button id="copy-button" class="secondary-button"
-                        type="button">Copy Text</button>
+                <button id="copy-button"
+                        class="secondary-button"
+                        type="button">
+                    Copy Text
+                </button>
 
-                <button id="clear-button" class="secondary-button"
-                        type="button">Clear</button>
+                <button id="clear-button"
+                        class="secondary-button"
+                        type="button">
+                    Clear
+                </button>
             </div>
         </div>
 
@@ -123,13 +136,13 @@
                 ? trimmedText.split(/\s+/u).length
                 : 0;
 
-            // Count characters, including spaces and line breaks.
+            // Count all characters, including spaces and line breaks.
             const characters = text.length;
 
             // Count characters without whitespace.
             const noSpaces = text.replace(/\s/g, "").length;
 
-            // Estimate the number of sentences.
+            // Estimate sentence count using sentence-ending punctuation.
             const sentenceMatches = trimmedText.match(
                 /[^.!?]+[.!?]+|[^.!?]+$/g
             );
@@ -162,8 +175,10 @@
                 : "Counts update automatically";
         }
 
+        // Update statistics whenever the user types or pastes text.
         textInput.addEventListener("input", countText);
 
+        // Copy the text to the clipboard.
         copyButton.addEventListener("click", async () => {
             const text = textInput.value;
 
@@ -181,6 +196,7 @@
             }
         });
 
+        // Clear the text and reset all statistics.
         clearButton.addEventListener("click", () => {
             textInput.value = "";
             countText();
@@ -188,6 +204,7 @@
             liveStatus.textContent = "Text cleared";
         });
 
+        // Initialize the statistics when the page loads.
         countText();
     </script>
 </body>
