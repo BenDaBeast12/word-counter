@@ -9,6 +9,10 @@
     <meta name="google-site-verification"
           content="5iMg0IsWd16Ain6f7A1289I_mOG8PaDKDfBjyF7uig4">
 
+    <!-- Google AdSense account -->
+    <meta name="google-adsense-account"
+          content="ca-pub-6355414723132442">
+
     <!-- Website description -->
     <meta name="description"
           content="Free online word counter. Count words, characters, sentences and paragraphs, and estimate reading time instantly.">
@@ -136,13 +140,13 @@
                 ? trimmedText.split(/\s+/u).length
                 : 0;
 
-            // Count all characters, including spaces and line breaks.
+            // Count characters, including spaces and line breaks.
             const characters = text.length;
 
             // Count characters without whitespace.
             const noSpaces = text.replace(/\s/g, "").length;
 
-            // Estimate sentence count using sentence-ending punctuation.
+            // Estimate sentence count.
             const sentenceMatches = trimmedText.match(
                 /[^.!?]+[.!?]+|[^.!?]+$/g
             );
@@ -175,7 +179,7 @@
                 : "Counts update automatically";
         }
 
-        // Update statistics whenever the user types or pastes text.
+        // Update statistics as the user types or pastes text.
         textInput.addEventListener("input", countText);
 
         // Copy the text to the clipboard.
