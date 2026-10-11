@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Free online word counter. Count words, characters, sentences and paragraphs, and estimate reading time instantly.">
+
+    <meta name="theme-color" content="#0f172a">
+
+    <title>Word Counter - Free Online Text Analyzer</title>
+
+    <link rel="icon" type="image/svg+xml"
+          href="{{ url_for('static', filename='logo.svg') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <main class="container">
+
+        <header class="brand">
+            <img src="{{ url_for('static', filename='logo.svg') }}"
+                 alt="Word Counter logo"
+                 class="logo">
+
+            <div>
+                <h1>Word Counter</h1>
+                <p class="subtitle">Simple, fast text statistics</p>
+            </div>
+        </header>
+
+        <label for="text-input" class="input-label">Your text</label>
+
+        <textarea
+            id="text-input"
+            placeholder="Type or paste your text here..."
+            spellcheck="true"
+            aria-describedby="privacy-note"
+        ></textarea>
+
+        <div class="text-actions">
+            <span id="live-status" aria-live="polite">
+                Ready to count
+            </span>
+
+            <div class="buttons">
+                <button id="copy-button" class="secondary-button"
+                        type="button">Copy Text</button>
+
+                <button id="clear-button" class="secondary-button"
+                        type="button">Clear</button>
+            </div>
+        </div>
+
+        <section class="stats" aria-label="Text statistics">
+
+            <article class="stat-card">
+                <span class="stat-label">Words</span>
+                <strong id="words">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">Characters</span>
+                <strong id="characters">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">No spaces</span>
+                <strong id="no-spaces">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">Sentences</span>
+                <strong id="sentences">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">Paragraphs</span>
+                <strong id="paragraphs">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">Reading time</span>
+                <strong id="reading-time">0 min</strong>
+            </article>
+
+        </section>
+
+        <p id="privacy-note" class="privacy-note">
+            Your text is counted in your browser and is not sent to our server.
+        </p>
+
+        <footer>
+            Free online word counter
+        </footer>
+
+    </main>
+
+    <script>
+        const textInput = document.getElementById("text-input");
+        const liveStatus = document.getElementById("live-status");
+
+        const wordsDisplay = document.getElementById("words");
+        const charactersDisplay = document.getElementById("characters");
+        const noSpacesDisplay = document.getElementById("no-spaces");
+        const sentencesDisplay = document.getElementById("sentences");
+        const paragraphsDisplay = document.getElementById("paragraphs");
+        const readingTimeDisplay = document.getElementById("reading-time");
+
+        const copyButton = document.getElementById("copy-button");
+        const clearButton = document.getElementById("clear-button");
+
+        function countText() {
+            const text = textInput.value;
+            const trimmedText = text.trim();
+
+            // Count words separated by whitespace.
+            const words = trimmedText
+                ? trimmedText.split(/\s+/u).length
+                : 0;
+
+            // Count characters, including spaces and line breaks.
+            const characters = text.length;
+
+            // Count characters without whitespace.
+            const noSpaces = text.replace(/\s/g, "").length;
+
+            // Estimate the number of sentences.
+            const sentenceMatches = trimmedText.match(
+                /[^.!?]+[.!?]+|[^.!?]+$/g
+            );
+
+            const sentences = sentenceMatches
+                ? sentenceMatches.filter(sentence => sentence.trim()).length
+                : 0;
+
+            // Count non-empty paragraphs separated by blank lines.
+            const paragraphs = trimmedText
+                ? trimmedText.split(/\n\s*\n/).filter(p => p.trim()).length
+                : 0;
+
+            // Estimate reading time at 200 words per minute.
+            const minutes = words === 0
+                ? 0
+                : Math.ceil(words / 200);
+
+            wordsDisplay.textContent = words.toLocaleString();
+            charactersDisplay.textContent = characters.toLocaleString();
+            noSpacesDisplay.textContent = noSpaces.toLocaleString();
+            sentencesDisplay.textContent = sentences.toLocaleString();
+            paragraphsDisplay.textContent = paragraphs.toLocaleString();
+
+            readingTimeDisplay.textContent =
+                minutes === 1 ? "1 min" : minutes + " min";
+
+            liveStatus.textContent = words === 0
+                ? "Ready to count"
+                : "Counts update automatically";
+        }
+
+        textInput.addEventListener("input", countText);
+
+        copyButton.addEventListener("click", async () => {
+            const text = textInput.value;
+
+            if (!text) {
+                liveStatus.textContent = "There is no text to copy";
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(text);
+                liveStatus.textContent = "Text copied";
+            } catch (error) {
+                liveStatus.textContent =
+                    "Copy failed. Select the text and copy it manually.";
+            }
+        });
+
+        clearButton.addEventListener("click", () => {
+            textInput.value = "";
+            countText();
+            textInput.focus();
+            liveStatus.textContent = "Text cleared";
+        });
+
+        countText();
+    </script>
+</body>
+</html>
